@@ -14,45 +14,50 @@ const sendButton = document.getElementById('send-button');
 
 // Defines an asynchronous function `generateResponse` that takes the user's input (prompt) and generates a response from the API.
 async function generateResponse(prompt) {
+    try {
+        const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [
+                    {
+                        parts: [
+                            {
+                                text: prompt,
+                            },
+                        ],
+                    },
+                ],
+            }),
+        });
 
-    // Sends a POST request to the Gemini API endpoint with the API key appended to the URL.
-    const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+        if (!response.ok) {
+            throw new Error('Failed to generate response');
+        }
 
-        // Specifies the HTTP method (POST) to send data to the API.
-        method: 'POST',
+        const data = await response.json();
 
-        // Sets the request headers to indicate that the content being sent is in JSON format.
-        headers: {
-            'Content-Type': 'application/json',
-        },
-
-        // The body of the request, converting the user's message into the format required by the API.
-        body: JSON.stringify({
-            contents: [
-                {
-                    parts: [
-                        {
-                            // The user's input (`prompt`) is inserted into the request payload.
-                            text: prompt
-                        }
-                    ]
-                }
-            ]
-        })
-    });
-
-    // Checks if the API request was unsuccessful (i.e., the response is not OK).
-    if (!response.ok) {
-        // If there's an error, an exception is thrown with an error message.
+        // Check if the expected data structure exists
+        if (data && data.candidates && data.candidates.length > 0) {
+            const content = data.candidates[0].content;
+            
+            // Ensure the structure contains 'parts' and 'text' in a clean format
+            if (content && content.parts && content.parts.length > 0) {
+                return cleanMarkdown(content.parts[0].text);
+            } else {
+                throw new Error('Invalid content structure in API response');
+            }
+        } else {
+            throw new Error('No candidates found in API response');
+        }
+    } catch (error) {
+        console.error('Error generating response:', error);
         throw new Error('Failed to generate response');
     }
+}
 
-    // Converts the API response to JSON format.
-    const data = await response.json();
-
-    // Returns the first generated response from the API (the text part of the response).
-    return data.candidates[0].content.parts[0].text;
-} 
 
 // Defines a function `cleanMarkdown` to remove any Markdown formatting (like headers, bold text, etc.) from the response.
 function cleanMarkdown(text) {
