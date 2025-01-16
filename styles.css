@@ -111,13 +111,68 @@ body{
     cursor: not-allowed;
 }
 
-@media (max-width:480px) {
-    .chat-container{
+/* Media Queries for Smaller Devices (Phones) */
+
+/* For screens smaller than 480px */
+@media (max-width: 480px) {
+    .chat-container {
         height: 100vh;
         border-radius: 0;
+        max-width: 100%;
+    }
+
+    .chat-header h1 {
+        font-size: 1.25rem; /* Smaller font size for smaller screens */
+    }
+
+    .message-content {
+        max-width: 90%; /* Allow more space for message content */
+    }
+
+    #user-input {
+        font-size: 0.875rem; /* Slightly smaller font for better readability */
+        padding: 0.5rem; /* Reduced padding for more space */
+    }
+
+    #send-button {
+        padding: 0.5rem 1rem; /* Reduced padding for a better fit */
+    }
+
+    .profile-image {
+        width: 1.5rem; /* Smaller profile image for compactness */
+        height: 1.5rem;
     }
 }
 
+/* For very small screens (e.g., phones with widths around 320px) */
+@media (max-width: 320px) {
+    .chat-container {
+        max-width: 100%;
+        padding: 0.5rem; /* Reduced padding for smaller screens */
+    }
+
+    .chat-header h1 {
+        font-size: 1.125rem; /* Slightly smaller header text */
+    }
+
+    .message-content {
+        max-width: 85%; /* Reduce the message content width further */
+    }
+
+    #user-input {
+        font-size: 0.75rem; /* Even smaller font for extreme small screens */
+        padding: 0.4rem; /* Further reduced padding */
+    }
+
+    #send-button {
+        padding: 0.5rem; /* Further reduce button padding */
+    }
+
+    .profile-image {
+        width: 1.25rem; /* Smaller profile images */
+        height: 1.25rem;
+    }
+}
 
 /* Scrollbar styles */
 ::-webkit-scrollbar{
